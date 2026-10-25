@@ -89,10 +89,10 @@ def _slack_api(method, payload):
 
 
 def _openai_draft(question):
-    api_key = _env("OPENAI_API_KEY")
+    api_key = _env("AI_GATEWAY_API_KEY") or _env("VERCEL_OIDC_TOKEN")
     if not api_key:
-        raise RuntimeError("OPENAI_API_KEY is missing")
-    model = _env("OPENAI_MODEL") or "gpt-6-luna"
+        raise RuntimeError("AI Gateway authentication is unavailable")
+    model = _env("AI_GATEWAY_MODEL") or "openai/gpt-6-luna"
     payload = {
         "model": model,
         "instructions": (
@@ -105,7 +105,7 @@ def _openai_draft(question):
         "store": False,
     }
     result = _post_json(
-        "https://api.openai.com/v1/responses",
+        "https://ai-gateway.vercel.sh/v1/responses",
         payload,
         {"Authorization": "Bearer " + api_key},
         timeout=90,
