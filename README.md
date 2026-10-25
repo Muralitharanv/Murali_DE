@@ -29,7 +29,7 @@ Workflow:
 
 1. Another Slack user mentions `@Murali Assistant` in the approved channel.
 2. Murali receives a private DM asking whether the bot should prepare a response.
-3. After Murali selects **Prepare response**, the backend calls the OpenAI Responses API.
+3. After Murali selects **Prepare response**, the backend calls Vercel AI Gateway's Responses API.
 4. Murali receives the full draft in the same private DM.
 5. Only after Murali selects **Send** is the draft posted in the original Slack thread.
 
@@ -47,10 +47,9 @@ Keep all values in Vercel; never commit them.
 | `SLACK_CHANNEL_ID` | Existing default channel used by `/api/send` and `/api/mcp` |
 | `SLACK_APPROVAL_CHANNEL_ID` | Only channel whose mentions trigger approvals; use `C0CBTKDL04V` for `#murali-tasks` |
 | `MURALI_USER_ID` | Slack owner allowed to approve; use `U0CBH66G947` |
-| `OPENAI_API_KEY` | OpenAI API key used only after first approval |
-| `OPENAI_MODEL` | Optional; defaults to `gpt-6-luna` |
+| `AI_GATEWAY_MODEL` | Optional; defaults to `openai/gpt-6-luna` |
 
-ChatGPT subscriptions and OpenAI API billing are separate. The API key needs an API project with billing or available credits.
+Vercel automatically supplies `VERCEL_OIDC_TOKEN`, so no OpenAI API key is stored in this project. AI Gateway still requires available credits or an eligible billing setup.
 
 ## Slack app configuration
 
