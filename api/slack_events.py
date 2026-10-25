@@ -220,8 +220,10 @@ class handler(BaseHTTPRequestHandler):
             if content_type.startswith("application/x-www-form-urlencoded"):
                 form = parse_qs(raw_body.decode("utf-8"))
                 payload = json.loads(form.get("payload", [""])[0])
-                self.respond(200, {})
-                return self._handle_interaction(payload)
+                # Process the action before acknowledging it so serverless runtimes
+                # do not terminate the invocation before the Slack update is sent.
+                self._handle_interaction(payload)
+                return self.respond(200, {})
             payload = json.loads(raw_body)
         except (UnicodeDecodeError, json.JSONDecodeError, ValueError, TypeError):
             return self.respond(400, {"error": "Invalid payload"})
