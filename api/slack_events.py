@@ -215,9 +215,6 @@ class handler(BaseHTTPRequestHandler):
         if length < 1 or length > MAX_BODY_BYTES:
             return self.respond(413, {"error": "Invalid request size"})
         raw_body = self.rfile.read(length)
-        if not _verify_slack_request(self.headers, raw_body):
-            return self.respond(401, {"error": "Invalid Slack signature"})
-
         content_type = self.headers.get("Content-Type", "")
         try:
             if content_type.startswith("application/x-www-form-urlencoded"):
@@ -231,6 +228,8 @@ class handler(BaseHTTPRequestHandler):
 
         if payload.get("type") == "url_verification":
             return self.respond(200, {"challenge": payload.get("challenge", "")})
+        if not _verify_slack_request(self.headers, raw_body):
+            return self.respond(401, {"error": "Invalid Slack signature"})
         if payload.get("type") != "event_callback":
             return self.respond(200, {"ok": True})
 
